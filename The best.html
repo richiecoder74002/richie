@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Richmond’s Programming Page (God Tier)</title>
+
+  <style>
+    /* ANIMATED GRADIENT */
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      overflow: hidden;
+      background: linear-gradient(135deg, #6a11cb, #2575fc, #ff00c8, #00ffd5);
+      background-size: 400% 400%;
+      animation: bgShift 10s infinite alternate linear;
+      color: white;
+    }
+
+    @keyframes bgShift {
+      0% {background-position: 0% 50%;}
+      100% {background-position: 100% 50%;}
+    }
+
+    /* DARK MODE */
+    .dark {
+      background: #111 !important;
+      color: white !important;
+    }
+
+    #toggle-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #ffd700;
+      color: black;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ffd700;
+    }
+    #toggle-btn:hover {
+      transform: scale(1.1);
+    }
+
+    /* FLOATING EMOJIS */
+    .emoji {
+      position: fixed;
+      font-size: 30px;
+      opacity: 0.6;
+      animation: floatUp 10s infinite linear;
+    }
+
+    @keyframes floatUp {
+      from {transform: translateY(100vh);}
+      to   {transform: translateY(-10vh);}
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #ffe89b;
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px #ffe89b;
+    }
+    nav a:hover {
+      transform: scale(1.1);
+    }
+
+    /* WAVE ANIMATION FOR TITLE */
+    .wave span {
+      display: inline-block;
+      animation: wave 1.5s infinite ease-in-out;
+    }
+    @keyframes wave {
+      0%   {transform: translateY(0);}
+      50%  {transform: translateY(-10px);}
+      100% {transform: translateY(0);}
+    }
+    .wave span:nth-child(1) { animation-delay: 0s; }
+    .wave span:nth-child(2) { animation-delay: 0.1s; }
+    .wave span:nth-child(3) { animation-delay: 0.2s; }
+    .wave span:nth-child(4) { animation-delay: 0.3s; }
+    .wave span:nth-child(5) { animation-delay: 0.4s; }
+
+    /* TYPEWRITER */
+    #typewriter {
+      font-size: 1.4rem;
+      margin-top: 10px;
+      border-right: 3px solid white;
+      display: inline-block;
+      animation: caret 0.7s infinite;
+    }
+    @keyframes caret {
+      50% {border-color: transparent;}
+    }
+
+    /* CARD 3D TILT */
+    .card {
+      background: rgba(255, 255, 255, 0.2);
+      width: 60%;
+      margin: 40px auto;
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: 0.2s;
+      transform-style: preserve-3d;
+    }
+
+    /* LIST */
+    li {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px 20px;
+      margin: 10px auto;
+      border-radius: 12px;
+      width: fit-content;
+      transition: 0.2s;
+      box-shadow: 0 0 10px white;
+    }
+    li:hover {
+      transform: scale(1.1);
+      background: rgba(255,255,255,0.4);
+    }
+
+    /* PARTICLE CANVAS */
+    #cursor-canvas, #explosion-canvas {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="toggle-btn">Dark Mode</div>
+
+<!-- Emoji background -->
+<div class="emoji" style="left:10%">✨</div>
+<div class="emoji" style="left:30%">💖</div>
+<div class="emoji" style="left:50%">⭐</div>
+<div class="emoji" style="left:70%">💫</div>
+<div class="emoji" style="left:90%">🔥</div>
+
+<nav>
+  <a href="#">Home</a>
+  <a href="#">Projects</a>
+  <a href="#">About</a>
+</nav>
+
+<header style="text-align:center; padding-top:60px;">
+  <h1 class="wave">
+    <span>W</span><span>e</span><span>l</span><span>c</span><span>o</span><span>m</span><span>e</span>
+  </h1>
+
+  <div id="typewriter"></div>
+</header>
+
+<div class="card" id="tilt">
+  <p>This is what I used to make this code:</p>
+  <ul>
+    <li>HTML</li>
+    <li>CSS</li>
+    <li>JavaScript</li>
+    <li>A stupid amount of style 😎</li>
+  </ul>
+</div>
+
+<canvas id="cursor-canvas"></canvas>
+<canvas id="explosion-canvas"></canvas>
+
+<script>
+/* DARK MODE */
+document.getElementById("toggle-btn").onclick = () => {
+  document.body.classList.toggle("dark");
+};
+
+/* TYPEWRITER */
+const text = "Topic: Programming";
+let i = 0;
+function type() {
+  if (i < text.length) {
+    document.getElementById("typewriter").innerHTML += text.charAt(i);
+    i++;
+    setTimeout(type, 80);
+  }
+}
+type();
+
+/* 3D Tilt */
+const card = document.getElementById("tilt");
+card.addEventListener("mousemove", (e) => {
+  const rect = card.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const rotateX = (y - rect.height / 2) / 20;
+  const rotateY = (rect.width / 2 - x) / 20;
+  card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+});
+card.addEventListener("mouseleave", () => {
+  card.style.transform = "rotateX(0) rotateY(0)";
+});
+
+/* PARTICLE TRAIL */
+const cursorCanvas = document.getElementById("cursor-canvas");
+const ctx1 = cursorCanvas.getContext("2d");
+cursorCanvas.width = innerWidth;
+cursorCanvas.height = innerHeight;
+
+let particles = [];
+
+function spawnParticle(x, y, size = 3) {
+  particles.push({
+    x, y,
+    size,
+    speedX: (Math.random() - 0.5) * 2,
+    speedY: (Math.random() - 0.5) * 2,
+    alpha: 1
+  });
+}
+
+window.addEventListener("mousemove", (e) => {
+  for (let i = 0; i < 4; i++) spawnParticle(e.clientX, e.clientY);
+});
+
+function animateCursor() {
+  ctx1.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    let p = particles[i];
+    p.x += p.speedX;
+    p.y += p.speedY;
+    p.alpha -= 0.02;
+    ctx1.fillStyle = `rgba(255,255,255,${p.alpha})`;
+    ctx1.beginPath();
+    ctx1.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx1.fill();
+    if (p.alpha <= 0) particles.splice(i, 1);
+  }
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+/* CLICK EXPLOSION */
+const explosionCanvas = document.getElementById("explosion-canvas");
+const ctx2 = explosionCanvas.getContext("2d");
+explosionCanvas.width = innerWidth;
+explosionCanvas.height = innerHeight;
+
+let explodeParticles = [];
+
+window.addEventListener("click", (e) => {
+  for (let i = 0; i < 30; i++) {
+    explodeParticles.push({
+      x: e.clientX,
+      y: e.clientY,
+      size: Math.random() * 5 + 2,
+      speedX: (Math.random() - 0.5) * 8,
+      speedY: (Math.random() - 0.5) * 8,
+      alpha: 1
+    });
+  }
+});
+
+function animateExplosion() {
+  ctx2.clearRect(0, 0, explosionCanvas.width, explosionCanvas.height);
+  for (let i = explodeParticles.length - 1; i >= 0; i--) {
+    let p = explodeParticles[i];
+    p.x += p.speedX;
+    p.y += p.speedY;
+    p.alpha -= 0.02;
+    ctx2.fillStyle = `rgba(255,255,255,${p.alpha})`;
+    ctx2.beginPath();
+    ctx2.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx2.fill();
+    if (p.alpha <= 0) explodeParticles.splice(i, 1);
+  }
+  requestAnimationFrame(animateExplosion);
+}
+animateExplosion();
+</script>
+
+</body>
+</html>
